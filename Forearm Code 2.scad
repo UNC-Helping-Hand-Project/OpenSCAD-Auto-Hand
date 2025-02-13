@@ -36,7 +36,7 @@ squareRad = 6.86; //[3:10]
 //trying to put the variable in terms of height of the base of the trapezoid
 circExtrude = heightSmall*5.07692307692;
 
-
+module mainShape(){
 difference() {
 difference() {
 difference() {
@@ -55,7 +55,18 @@ difference() {
                 [(width1 - width2) / 2, length1]
             ]); 
         }
+        // Adding slight raised parts over oval cutouts
+    rotations_2 = [-5.5, 5.5];
+    x_positions_2 = [0, width1 - 17]; 
+    y_positions_2 = [0, -12]; 
 
+    for (i = [0 : len(rotations_2) - 1]) {
+    rotate(rotations_2[i]) { 
+        translate([x_positions_2[i], y_positions_2[i]]) {
+            cube([15.55, 84.64, heightMain + 1.28], center = false); 
+        }
+    }
+}
     }
     
     
@@ -132,19 +143,24 @@ cube([(length1/1.53),20,3*circExtrude],true);
     }
 }
 }
+}
  ; 
 //Need to still figure out exact location of these circle ports in relation to rest of body
 
 //Right port
-difference()
- {
-linear_extrude(height=circExtrude)   
-translate([(width1-width2)/3.5+width2,length1]) 
-circle(radius); 
-translate([(width1-width2)/3.5+width2,length1]){
-cube([squareRad,squareRad,3*circExtrude],true);
-    }
- }
+ module port(){
+    difference() {
+        union() {
+            linear_extrude(height=circExtrude, center=false, scale=0.75) {
+                circle(d=18.65);
+            }
+                cube([10, 10, 10], center=false);
+            
+                cylinder(h=10, r=5);
+        }
+        cube([1, 1, 1]);
+        }
+
  //Left Port
  difference()
  {
@@ -179,7 +195,6 @@ h = 10;
 w = 4;
 
 //Start with an extruded triangle
-
 translate([topPortX+topPortWidth/2,topPortY,heightSmall]){
 rotate(a=[180,-90,0])
 linear_extrude(height = topPortWidth, center = true, convexity = 10, twist = 0)
@@ -187,20 +202,8 @@ polygon(points=[[0,0],[topPortHeight,0],[0,b]], paths=[[0,1,2]]);
 
 }
 
-// Adding slight raised parts over oval cutouts
-rotations_2 = [-5.5, 5.5];
-x_positions_2 = [0, width1 - 17]; 
-y_positions_2 = [0, -12]; 
-
-for (i = [0 : len(rotations_2) - 1]) {
-    rotate(rotations_2[i]) { 
-        translate([x_positions_2[i], y_positions_2[i]]) {
-            cube([15.55, 84.64, heightMain + 1.28], center = false); 
-        }
-    }
-    
-    
 }
+
 
 
 
@@ -223,5 +226,7 @@ module gauntletPegHole() {
     }
 }
 
-translate([0, 0, 0]) gauntletPegHole();
-translate([30, 0, 0]) gauntletPegHole();
+
+// Rendering modules
+translate([-width1/2,0,0]) mainShape();
+port();
