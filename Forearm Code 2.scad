@@ -39,6 +39,7 @@ circDiam = 18.65; //[15:20]
 circExtrude = heightSmall*5.07692307692;
 
 module mainShape(){
+module mainShape(){
 difference() {
 difference() {
 difference() {
@@ -58,6 +59,17 @@ difference() {
             ]); 
         }
         // Adding slight raised parts over oval cutouts
+    rotations_2 = [-5.5, 5.5];
+    x_positions_2 = [0, width1 - 17]; 
+    y_positions_2 = [0, -12]; 
+
+    for (i = [0 : len(rotations_2) - 1]) {
+    rotate(rotations_2[i]) { 
+        translate([x_positions_2[i], y_positions_2[i]]) {
+            cube([15.55, 84.64, heightMain + 1.28], center = false); 
+        }
+    }
+}        // Adding slight raised parts over oval cutouts
     rotations_2 = [-5.5, 5.5];
     x_positions_2 = [0, width1 - 17]; 
     y_positions_2 = [0, -12]; 
@@ -135,13 +147,76 @@ cube([(length1/1.53),20,3*circExtrude],true);
     }
 }
 }
-} 
+ ; 
 //Need to still figure out exact location of these circle ports in relation to rest of body
 
 
 
 //Circular ports on the end of the main shape
  module gauntletPegHole(){
+//Right port
+ module port(){
+    difference() {
+        union() {
+            linear_extrude(height=circExtrude, center=false, scale=0.75) {
+                circle(d=18.65);
+            }
+                cube([10, 10, 10], center=false);
+            
+                cylinder(h=10, r=5);
+        }
+        cube([1, 1, 1]);
+        }
+
+ //Left Port
+ difference()
+ {
+linear_extrude(height=circExtrude)  
+translate([(width1-width2)/1.4,length1])
+circle(radius);
+translate([(width1-width2)/1.4,length1]){
+cube([squareRad,squareRad,3*circExtrude],true);
+    }
+    
+}
+;
+
+topPortWidth = 13.54;
+topPortLength = 36.43;
+topPortHeight = 5.02;
+
+topPortX = (width1-topPortWidth)/2;
+topPortY = (length1-topPortLength)/2;
+
+translate([topPortX,topPortY,heightSmall]){
+cube([topPortWidth,topPortLength,topPortHeight]);
+
+translate([topPortX/8-.5,topPortY-7,0]){
+cylinder(topPortHeight,topPortWidth/2+.3,topPortWidth/2+.3);
+}
+
+}
+
+b = 10;
+h = 10;
+w = 4;
+
+//Start with an extruded triangle
+translate([topPortX+topPortWidth/2,topPortY,heightSmall]){
+rotate(a=[180,-90,0])
+linear_extrude(height = topPortWidth, center = true, convexity = 10, twist = 0)
+polygon(points=[[0,0],[topPortHeight,0],[0,b]], paths=[[0,1,2]]);
+
+}
+
+}
+
+
+
+
+// outline code for the ports
+
+module gauntletPegHole() {
     difference() {
             linear_extrude(height=circExtrude, center=false, scale=0.75) {circle(d=circDiam);}
             translate([0,0,circExtrude/2]){
@@ -154,3 +229,23 @@ cube([(length1/1.53),20,3*circExtrude],true);
 translate([-width1/2,0,0]) mainShape();
 translate([-41.12, length1-circDiam/2]) gauntletPegHole();
 mirror([0,1,0]) { translate([-41.12, length1-circDiam/2]) gauntletPegHole();}
+
+        union() {
+            linear_extrude(height=3, center=false, scale=0.75) {
+                circle(d=18.65);
+            }
+            translate([0, 0, 0]) {
+                cube([10, 10, 10], center=true);
+            }
+            translate([0, 0, 0]) {
+                cylinder(h=10, r=5);
+            }
+        }
+        cube([20, 20, 20]);
+    }
+}
+
+
+// Rendering modules
+translate([-width1/2,0,0]) mainShape();
+port();
