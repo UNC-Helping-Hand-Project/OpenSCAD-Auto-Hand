@@ -39,7 +39,6 @@ circDiam = 18.65; //[15:20]
 circExtrude = heightSmall*5.07692307692;
 
 module mainShape(){
-module mainShape(){
 difference() {
 difference() {
 difference() {
@@ -47,15 +46,15 @@ difference() {
     // Main shape
     linear_extrude(height=heightMain) {
         hull() { 
-            translate([origin, origin]) circle(d=diameter);
-            translate([width1, origin]) circle(d=diameter);
-            translate([(width1 - width2) / 2 + width2, length1]) circle(d=diameter);
-            translate([(width1 - width2) / 2, length1]) circle(d=diameter);
+            translate([origin+diameter/2, origin+diameter/2]) circle(d=diameter);
+            translate([width1-diameter/2, origin+diameter/2]) circle(d=diameter);
+            translate([((width1 - width2) / 2 + width2) - diameter/2, length1-diameter/2]) circle(d=diameter);
+            translate([((width1 - width2) / 2) + diameter/2, length1 - diameter/2]) circle(d=diameter);
             polygon(points=[
-                [origin, origin],
-                [width1, origin],
-                [(width1 - width2) / 2 + width2, length1],
-                [(width1 - width2) / 2, length1]
+                [origin+diameter/2, origin+diameter/2],
+                [width1-diameter/2, origin+diameter/2],
+                [((width1 - width2) / 2 + width2) - diameter/2, length1-diameter/2],
+                [((width1 - width2) / 2) + diameter/2, length1 - diameter/2]
             ]); 
         }
         // Adding slight raised parts over oval cutouts
@@ -248,4 +247,4 @@ mirror([0,1,0]) { translate([-41.12, length1-circDiam/2]) gauntletPegHole();}
 
 // Rendering modules
 translate([-width1/2,0,0]) mainShape();
-port();
+//gauntletPegHole();
